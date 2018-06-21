@@ -1,0 +1,25 @@
+language: rust
+
+sudo: false
+
+env:
+  global:
+    - RUST_BACKTRACE=1
+    - RUSTFLAGS="-D warnings"
+
+cache: cargo
+
+rust: stable
+
+install:
+  - rustup toolchain add stable
+  - rustup toolchain add nightly
+  - rustup component add rustfmt-preview
+  - cargo +nightly install -f clippy
+
+before_script:
+  - cargo fmt --all -- --write-mode diff
+  - cargo +nightly clippy --all
+
+script:
+  - cargo test --all -- --nocapture
